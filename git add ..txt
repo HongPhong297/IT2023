@@ -4,7 +4,7 @@ Bước 2: git remote add origin https://...
 
 
 
-
+check : git remote -v
 
 
 git add .
