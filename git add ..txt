@@ -1,0 +1,14 @@
+Bước 1: git init
+Bước 2: git remote add origin https://...
+
+
+
+
+
+
+
+git add .
+
+git commit -m""
+
+git push origin master 
