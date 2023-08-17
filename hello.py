@@ -1,40 +1,60 @@
-import qrcode
-from PIL import Image
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
 
-# Load the image
-image_path = 't1.jpg'
-image = Image.open(image_path)
 
-# Convert the image to grayscale
-image = image.convert('L')
+# Khởi tạo Pygame và OpenGL
+pygame.init()
+display = (800, 600)
+pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+glTranslatef(0.0, 0.0, -5)
 
-# Create a QR code instance
-qr = qrcode.QRCode(
-    version=None,  # Let qrcode determine the version
-    error_correction=qrcode.constants.ERROR_CORRECT_L,
-    box_size=10,
-    border=4,
+# Vị trí và chỉ số đỉnh của hình lập phương
+vertices = (
+    (1, -1, -1),
+    (1, 1, -1),
+    (-1, 1, -1),
+    (-1, -1, -1),
+    (1, -1, 1),
+    (1, 1, 1),
+    (-1, -1, 1),
+    (-1, 1, 1)
 )
 
-# Add the image data to the QR code
-qr.add_data(image.tobytes())
+edges = (
+    (0, 1),
+    (1, 2),
+    (2, 3),
+    (3, 0),
+    (4, 5),
+    (5, 6),
+    (6, 7),
+    (7, 4),
+    (0, 4),
+    (1, 5),
+    (2, 6),
+    (3, 7)
+)
 
-# Make the QR code
-qr.make(fit=True)
+def Cube():
+    glBegin(GL_LINES)
+    for edge in edges:
+        for vertex in edge:
+            glVertex3fv(vertices[vertex])
+    glEnd()
 
-# Get the actual version used
-version = qr.version
+# Vòng lặp chính
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
 
-# Update the version if it exceeds the valid range
-if version > 40:
-    qr.version = 40
-
-# Generate the QR code
-qr.make()
-
-# Create an image from the QR code
-qr_image = qr.make_image(fill_color="black", back_color="white")
-
-# Save the QR code image
-output_path = 'path_to_output_qr_code.png'
-qr_image.save(output_path)
+    glRotatef(1, 3, 1, 3)  # Xoay hình
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    Cube()
+    pygame.display.flip()
+    pygame.time.wait(10)
