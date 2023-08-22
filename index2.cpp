@@ -1,13 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+void inputValue(int *value){
+    printf("input value: ");
+    scanf("%d",value);
+}
 void allocateMemoryOnHeap(int value, int **ptr) {
     srand((unsigned int)time(NULL));
     *ptr = (int*)malloc(value*sizeof(int)); 
-    /*khi khai báo 1 hay nhiều chiều cũng chỉ cần 1 sao vì hàm mallloc cần 1 con trỏ đứng trước nó*/
+    
     for(int i = 0; i < value; i++){
-        *(*ptr + i) = rand() % 101 + 1;
+        *(*ptr + i) = rand() % 100 + 1;
     }
+}
+void outputArr(int value, int *ptr){
+    for(int i = 0; i < value; i++){
+        printf("%d ",*(ptr + i));
+    }
+    printf("\n");
 }
 void arrange(int value, int *ptr){
     for(int i = 0; i < value - 1; i++){
@@ -22,20 +32,23 @@ void arrange(int value, int *ptr){
         *(ptr + min) = temp;
     }
 }
+void addNewValue(int *value, int **ptr, int index, int number){
+    *value += 1;
+    *ptr = (int*)realloc(*ptr, (*value)*sizeof(int));
+    for(int i = *value; i > index; i--){
+        *(*ptr + i) = *(*ptr + i - 1);
+    }
+    *(*ptr + index) = number;
+}
 int main() {
-    int value;
-    printf("input value: ");
-    scanf("%d",&value);
-    int *ptrHeap;
+    int value, *ptrHeap;
+    inputValue(&value);
     allocateMemoryOnHeap(value, &ptrHeap);
-    for(int i = 0; i < value; i++){
-        printf("%d ",*(ptrHeap + i));
-    }
-    printf("\n");
+    outputArr(value,ptrHeap);
     arrange(value, ptrHeap);
-    for(int i = 0; i < value; i++){
-        printf("%d ",*(ptrHeap + i));
-    }
+    outputArr(value,ptrHeap);
+    addNewValue(&value,&ptrHeap,2,297);
+    outputArr(value,ptrHeap);
     free(ptrHeap);
     return 0;
 }
