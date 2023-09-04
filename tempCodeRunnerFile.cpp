@@ -1,2 +1,1 @@
-printf("input value: ");
-    // scanf("%d",&value);
+Node *temp = pHead;
